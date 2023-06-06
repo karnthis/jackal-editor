@@ -4,7 +4,7 @@ import { Editor } from '@bytemd/vue-next'
 import gfm from '@bytemd/plugin-gfm'
 import 'bytemd/dist/index.css'
 
-import {WalletHandler, FileIo, FileIoI, FileUploadHandler, StorageHandler, getFileTreeData} from 'jackal.js'
+import {WalletHandler, FileIo, FileIoI, FileUploadHandler, StorageHandler, getFileTreeData, IUploadList} from 'jackal.js'
 
 let wallet = ref({})
 const walletActive = ref(false)
@@ -98,7 +98,7 @@ const uploadFile = async function () {
 
   const parent = await fileIo.downloadFolder(parentFolderPath)
   console.log(parent)
-  const uploadList = {}
+  const uploadList: IUploadList = {}
   uploadList[fileName] =  {
     data: null,
     exists: false, 

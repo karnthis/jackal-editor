@@ -11,6 +11,7 @@
   "dependencies": {
     "@bytemd/plugin-gfm": "^1.21.0",
     "@bytemd/vue": "^1.21.0",
+    "@bytemd/vue\n": "^1.21.0",
     "@bytemd/vue-next": "^1.21.0",
     "bytemd": "^1.21.0",
     "jackal.js": "^2.0.0-rc.3",

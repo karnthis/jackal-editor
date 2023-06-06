@@ -47,6 +47,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"\
       ],\
       [\
+        "@bytemd/vue\\n",\
+        "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40bytemd%2Fvue%2F-%2Fvue-1.21.0.tgz"\
+      ],\
+      [\
         "@bytemd/vue-next",\
         "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"\
       ],\
@@ -1770,6 +1774,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@bytemd/plugin-gfm", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"],\
             ["@bytemd/vue", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"],\
+            ["@bytemd/vue\\n", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40bytemd%2Fvue%2F-%2Fvue-1.21.0.tgz"],\
             ["@bytemd/vue-next", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"],\
             ["@vitejs/plugin-vue", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:4.2.3"],\
             ["bytemd", "npm:1.21.0"],\
@@ -1860,6 +1865,29 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/__virtual__/@bytemd-vue-virtual-6ec7262a41/0/cache/@bytemd-vue-npm-1.21.0-32954d3aa2-b2f44f5956.zip/node_modules/@bytemd/vue/",\
           "packageDependencies": [\
             ["@bytemd/vue", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"],\
+            ["@types/vue", null],\
+            ["bytemd", "npm:1.21.0"],\
+            ["vue", "npm:3.3.4"]\
+          ],\
+          "packagePeers": [\
+            "@types/vue",\
+            "vue"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@bytemd/vue\\n", [\
+        ["npm:1.21.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40bytemd%2Fvue%2F-%2Fvue-1.21.0.tgz", {\
+          "packageLocation": "./.yarn/__virtual__/@bytemd-vue\\n-virtual-0e8cff6575/0/cache/@bytemd-vue\\n-npm-1.21.0-d42cdfc189-0573de61aa.zip/node_modules/@bytemd/vue\\n/",\
+          "packageDependencies": [\
+            ["@bytemd/vue\\n", "npm:1.21.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40bytemd%2Fvue%2F-%2Fvue-1.21.0.tgz"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40bytemd%2Fvue%2F-%2Fvue-1.21.0.tgz", {\
+          "packageLocation": "./.yarn/__virtual__/@bytemd-vue\\n-virtual-0e8cff6575/0/cache/@bytemd-vue\\n-npm-1.21.0-d42cdfc189-0573de61aa.zip/node_modules/@bytemd/vue\\n/",\
+          "packageDependencies": [\
+            ["@bytemd/vue\\n", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40bytemd%2Fvue%2F-%2Fvue-1.21.0.tgz"],\
             ["@types/vue", null],\
             ["bytemd", "npm:1.21.0"],\
             ["vue", "npm:3.3.4"]\
@@ -4769,6 +4797,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jackal-editor", "workspace:."],\
             ["@bytemd/plugin-gfm", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"],\
             ["@bytemd/vue", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"],\
+            ["@bytemd/vue\\n", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40bytemd%2Fvue%2F-%2Fvue-1.21.0.tgz"],\
             ["@bytemd/vue-next", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:1.21.0"],\
             ["@vitejs/plugin-vue", "virtual:80a11fe59817bbbe9432b4be5ab159ae9a375ace8a4543d7cf6ccce7721ec2e4a98016a1ecd04319a00bf2130c453fda4bdf347d011bcca973c8ee907129fe14#npm:4.2.3"],\
             ["bytemd", "npm:1.21.0"],\

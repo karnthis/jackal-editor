@@ -50,6 +50,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bytemd/vue\n@npm:^1.21.0":
+  version: 1.21.0
+  resolution: "@bytemd/vue\n@npm:1.21.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40bytemd%2Fvue%2F-%2Fvue-1.21.0.tgz"
+  dependencies:
+    bytemd: 1.21.0
+  peerDependencies:
+    vue: ^2.0.0
+  checksum: 0573de61aa307c56f2e3978563465e104c80c70ee843d14541d6f6cc3ad21dcdb66c6d165fa76aedeb8d303a5a52ffeb5e457389c3e0bccda296323adcac46ca
+  languageName: node
+  linkType: hard
+
 "@bytemd/vue-next@npm:^1.21.0":
   version: 1.21.0
   resolution: "@bytemd/vue-next@npm:1.21.0"
@@ -2551,6 +2562,7 @@ __metadata:
   dependencies:
     "@bytemd/plugin-gfm": ^1.21.0
     "@bytemd/vue": ^1.21.0
+    "@bytemd/vue\n": ^1.21.0
     "@bytemd/vue-next": ^1.21.0
     "@vitejs/plugin-vue": ^4.1.0
     bytemd: ^1.21.0

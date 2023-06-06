@@ -1,10 +1,14 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
   <Editor :value="value" :plugins="plugins" @change="handleChange" />
 </template>
 
 <script>
 import gfm from '@bytemd/plugin-gfm'
-import { Editor, Viewer } from '@bytemd/vue'
+import { Editor } from '@bytemd/vue'
 
 const plugins = [
   gfm(),
