@@ -1,0 +1,28 @@
+{
+  "name": "jackal-editor",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@bytemd/plugin-gfm": "^1.21.0",
+    "@bytemd/vue": "^1.21.0",
+    "@bytemd/vue-next": "^1.21.0",
+    "bytemd": "^1.21.0",
+    "jackal.js": "^2.0.0-rc.3",
+    "jackal.js-protos": "^1.3.11",
+    "node-stdlib-browser": "^1.2.0",
+    "vite-plugin-node-stdlib-browser": "^0.2.1",
+    "vue": "^3.2.47"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.1.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "vue-tsc": "^1.4.2"
+  }
+}
