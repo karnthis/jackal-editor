@@ -2,30 +2,36 @@
 
 </script>
 
-<template>
+<template setup lang="ts">
+  // @ts-ignore: all
   <Editor :value="value" :plugins="plugins" @change="handleChange" />
 </template>
 
-<script>
+<script setup lang="ts">
 import gfm from '@bytemd/plugin-gfm'
 import { Editor } from '@bytemd/vue'
 
-const plugins = [
+const _plugins = [
   gfm(),
   // Add more plugins here
 ]
 
-export default {
+const methods : any = {
+    handleChange(v : string): any {
+      this.value = v
+    }
+}
+
+const item: any = {
   components: { Editor },
   data() {
-    return { value: '', plugins }
+    return { value: '', _plugins }
   },
-  methods: {
-    handleChange(v) {
-      this.value = v
-    },
-  },
+  methods: methods 
 }
+
+
+export default item
 </script>
 
 <style scoped>
