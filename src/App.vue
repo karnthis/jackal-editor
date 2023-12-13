@@ -1,18 +1,20 @@
 <script setup lang="ts">
-// @ts-ignore
-import { ref } from 'vue'
-// @ts-ignore
-import { Editor } from '@bytemd/vue-next'
-// @ts-ignore
+import { ref, type Ref } from 'vue'
+import type { Editor } from '@bytemd/vue-next'
 import gfm from '@bytemd/plugin-gfm'
 import 'bytemd/dist/index.css'
-// @ts-ignore
-import {WalletHandler, FileIo, FileIoI, FileUploadHandler, StorageHandler, getFileTreeData, IUploadList} from 'jackal.js'
+import {type IWalletHandler, WalletHandler, FileIo, FileUploadHandler, StorageHandler, getFileTreeData} from '@jackallabs/jackal.js'
+import type {IUploadList} from '@jackallabs/jackal.js'
 
-let wallet = ref({})
-const walletActive = ref(false)
-let fileIo: FileIoI = null
-let data = ref([])
+type FileData = {
+  name: string;
+  fid: string;
+};
+
+const wallet: Ref<any> = ref({})
+const walletActive : Ref<Boolean> = ref(false)
+const fileIo: Ref<any> = ref({})
+const data: Ref<FileData[]> = ref([])
 
 const path = "editor-demo"
 
@@ -66,8 +68,8 @@ const mainnet = {
       features: []
   }
 }
-// @ts-ignore
-const connectWallet = async function() {
+
+async function connectWallet() {
 
   const walletConfig = {
     selectedWallet: 'keplr',
@@ -81,18 +83,17 @@ const connectWallet = async function() {
   // Hooking up the wallet to your app
   wallet.value = await WalletHandler.trackWallet(walletConfig)
 
-  fileIo = await FileIo.trackIo(wallet.value, '1.0.9')
+  fileIo.value = await FileIo.trackIo(wallet.value, '1.0.9')
 
   const listOfFolders = [path] 
   // you can create as many folders as you would like this way
 
   // after the first time, this code can be used instead. this will only create new folders if they don't already exist
-  await fileIo.verifyFoldersExist(listOfFolders)
+  await fileIo.value.verifyFoldersExist(listOfFolders)
   walletActive.value = true
   updateFileList()
 }
 
-// @ts-ignore
 const uploadFile = async function () {
 
   const fileName = globFileName.value
@@ -108,7 +109,7 @@ const uploadFile = async function () {
   const parentFolderPath = "s/" + path // replace this with your own path
   const handler = await FileUploadHandler.trackFile(toUpload, parentFolderPath)
 
-  const parent = await fileIo.downloadFolder(parentFolderPath)
+  const parent = await fileIo.value.downloadFolder(parentFolderPath)
   console.log(parent)
   const uploadList: IUploadList = {}
   uploadList[fileName] =  {
@@ -119,12 +120,15 @@ const uploadFile = async function () {
     uploadable: await handler.getForPublicUpload()
   }
   
-  const details = await fileIo.staggeredUploadFiles(uploadList, parent, {counter: 0, complete: 0})
+  const details = await fileIo.value.staggeredUploadFiles(uploadList, parent, {counter: 0, complete: 0})
   console.log(details)
 
   const f = await getFileTreeData("s/" + path + "/" + fileName, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
-
-  const fidList = JSON.parse(f.value.files.contents)
+  const fFiles = f.value.files
+    if (fFiles == null) {
+      return
+    }
+  const fidList = JSON.parse(fFiles.contents)
   const newFid = fidList.fids[0]
   console.log(newFid)
 
@@ -132,13 +136,15 @@ const uploadFile = async function () {
   alert("Success!")
 }
 
-// @ts-ignore
 const loadFile = async function (fileName : string) {
 
 
   const f = await getFileTreeData("s/" + path + "/" + fileName, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
-
-  const fidList = JSON.parse(f.value.files.contents)
+  const fFiles = f.value.files
+    if (fFiles == null) {
+      return
+    }
+  const fidList = JSON.parse(fFiles.contents)
   const newFid = fidList.fids[0]
 
   const response = await fetch("https://jackal.link/f/" + newFid)
@@ -152,17 +158,15 @@ const loadFile = async function (fileName : string) {
 let content = ref('')
 let globFileName = ref('')
 
-// @ts-ignore
 const plugins = [gfm()]
 
-// @ts-ignore
 const handleChange = (v: string) => {
   content.value = v
 }
 
 
-const updateFileList = async function (){
-  const listFiles = await fileIo.downloadFolder("s/" + path)
+async function updateFileList(){
+  const listFiles = await fileIo.value.downloadFolder("s/" + path)
   const files = listFiles.folderDetails.fileChildren
 
   let d = []
@@ -173,7 +177,11 @@ const updateFileList = async function (){
 
     const fDetails = await getFileTreeData("s/" + path + "/" + f.name, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
     console.log(fDetails)
-    const fidList = JSON.parse(fDetails.value.files.contents)
+    const dFiles = fDetails.value.files
+    if (dFiles == null) {
+      continue
+    }
+    const fidList = JSON.parse(dFiles.contents)
     const newFid = fidList.fids[0]
 
     d[x] = {name: key, fid: newFid}
@@ -186,7 +194,7 @@ const updateFileList = async function (){
 
 <template >
   <main>
-    <button type="button" @click="connectWallet">{{ (walletActive.value == true) ? "Connected" : "Connect Wallet"}}</button>
+    <button type="button" @click="connectWallet">{{ (walletActive == true) ? "Connected" : "Connect Wallet"}}</button>
     <input  type="text" v-model="globFileName">
     <button type="button" @click="uploadFile">Save</button>
     <Editor :value="content" :plugins="plugins" @change="handleChange" />
