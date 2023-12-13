@@ -13,7 +13,7 @@ type FileData = {
 };
 
 const wallet: Ref<any> = ref({})
-const walletActive : Ref<Boolean> = ref(false)
+const walletActive : Ref<boolean> = ref(false)
 const fileIo: Ref<any> = ref({})
 const data: Ref<FileData[]> = ref([])
 
@@ -84,7 +84,7 @@ async function connectWallet() {
   // Hooking up the wallet to your app
   wallet.value = await WalletHandler.trackWallet(walletConfig)
 
-  fileIo.value = await FileIo.trackIo(wallet.value, '1.0.9')
+  fileIo.value = await FileIo.trackIo(wallet.value, '1.1.2')
 
   const listOfFolders = [path] 
   // you can create as many folders as you would like this way
@@ -96,13 +96,13 @@ async function connectWallet() {
 }
 
 const uploadFile = async function () {
-
   const fileName = globFileName.value
   if (fileName.length == 0) {
     alert("file needs name")
     return
   }
 
+  loading.value = true
 
   const blob = new Blob([content.value], { type: 'text/plain' });
   const toUpload = new File([blob], fileName, {type: "text/plain"});
@@ -127,6 +127,7 @@ const uploadFile = async function () {
   const f = await getFileTreeData("s/" + path + "/" + fileName, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
   const fFiles = f.value.files
     if (fFiles == null) {
+      loading.value = false
       return
     }
   const fidList = JSON.parse(fFiles.contents)
@@ -134,12 +135,11 @@ const uploadFile = async function () {
   console.log(newFid)
 
   updateFileList()
+  loading.value = false
   alert("Success!")
 }
 
 const loadFile = async function (fileName : string) {
-
-
   const f = await getFileTreeData("s/" + path + "/" + fileName, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
   const fFiles = f.value.files
     if (fFiles == null) {
@@ -155,9 +155,19 @@ const loadFile = async function (fileName : string) {
   globFileName.value = fileName
 }
 
+const openFile = async function (fileName : string) {
+  const link = "https://jackal.link/p/" + wallet.value.getJackalAddress() + "/" +  path + "/" + fileName
+  const w = window.open(link, '_blank')
+  if (w == null) {
+    return
+  }
+  w.focus();
+}
 
-let content = ref('')
-let globFileName = ref('')
+
+const content = ref('')
+const loading = ref(false)
+const globFileName = ref('')
 
 const plugins = [gfm()]
 
@@ -165,6 +175,9 @@ const handleChange = (v: string) => {
   content.value = v
 }
 
+const isDisabled = function() : boolean {
+  return !walletActive.value || loading.value
+}
 
 async function updateFileList(){
   const listFiles = await fileIo.value.downloadFolder("s/" + path)
@@ -196,15 +209,14 @@ async function updateFileList(){
 <template >
   <main>
     <button type="button" @click="connectWallet">{{ (walletActive == true) ? "Connected" : "Connect Wallet"}}</button>
-    <input  type="text" v-model="globFileName">
-    <button type="button" @click="uploadFile">Save</button>
+    <span>File Name: </span>
+    <input  class="filename" type="text" v-model="globFileName">
+    <button type="button" @click="uploadFile" :disabled="isDisabled()">{{loading ? "Uploading..." : "Save"}}</button>
     <Editor :value="content" :plugins="plugins" @change="handleChange" />
     <div class="files">
-      <div class="card" v-for="item in data" :key="item.name" @click="function () {
-        // @ts-ignore
-          loadFile(item.name)
-        }">
-        <h1>{{item.name}}</h1>
+      <div class="card" v-for="item in data" :key="item.name">
+        <h1 class="file-title" @click="function () {loadFile(item.name)}">{{item.name}}</h1>
+        <span class="gateway-link" @click="function () {openFile(item.name)}">Gateway</span>
       </div>
     </div>
   </main>
@@ -218,12 +230,47 @@ async function updateFileList(){
 }
 
 .bytemd {
-  width: 80vw;
+  width: 60vw;
   height: calc(100vh - 200px);
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 30px;
   margin-top: 30px;
+}
+
+.gateway-link,.file-title {
+  cursor: pointer;
+}
+
+.gateway-link:hover {
+  text-decoration: underline;
+}
+
+.file-title:hover {
+  text-decoration: underline;
+}
+
+button {
+  margin-left: 20px;
+  margin-right: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+}
+
+button:disabled {
+  cursor: auto;
+  border-color: black;
+}
+
+.filename {
+  box-sizing: border-box;
+  padding: 5px;
+  font-size: 16px;
+  border-width: 1px;
+  border-radius: 8px;
+  height: 40px;
+  padding-left: 10px;
 }
 
 .bytemd-body {
@@ -246,7 +293,6 @@ async function updateFileList(){
   border-style: solid;
   padding: 10px;
   overflow: hidden;
-  cursor: pointer;
 }
 
 </style>
