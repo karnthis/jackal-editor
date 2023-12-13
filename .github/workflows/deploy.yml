@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build_vue:
     runs-on: ubuntu-latest
-    name: Build Vue
+    name: Build Site
     steps:
     - uses: actions/checkout@v2
     - id: Build-Vue
