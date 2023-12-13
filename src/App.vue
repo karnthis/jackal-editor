@@ -17,7 +17,7 @@ const walletActive : Ref<boolean> = ref(false)
 const fileIo: Ref<any> = ref({})
 const data: Ref<FileData[]> = ref([])
 
-const path = "editor-demo"
+const path = "jeditor"
 
 const mSignerChain = 'jackal-1'
 const mainnet = {
@@ -208,6 +208,7 @@ async function updateFileList(){
 
 <template >
   <main>
+    <h1>Jackal Markdown Editor</h1>
     <button type="button" @click="connectWallet">{{ (walletActive == true) ? "Connected" : "Connect Wallet"}}</button>
     <span>File Name: </span>
     <input  class="filename" type="text" v-model="globFileName">
@@ -227,6 +228,11 @@ async function updateFileList(){
   max-width: 1280px;
   margin: 0 auto;
   font-weight: normal;
+  /* padding-top: 10px; */
+}
+
+h1 {
+  margin-top: 0px;
 }
 
 .bytemd {
