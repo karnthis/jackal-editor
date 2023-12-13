@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
-import type { Editor } from '@bytemd/vue-next'
+// @ts-ignore
+import { Editor }  from '@bytemd/vue-next'
 import gfm from '@bytemd/plugin-gfm'
 import 'bytemd/dist/index.css'
 import {type IWalletHandler, WalletHandler, FileIo, FileUploadHandler, StorageHandler, getFileTreeData} from '@jackallabs/jackal.js'
