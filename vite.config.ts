@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -12,7 +13,10 @@ export default defineConfig({
       include: [/\.vue$/, /\.md$/], // <--
     }),
     nodePolyfills(),
-    Markdown()
+    Markdown(),
+    NodeGlobalsPolyfillPlugin({
+      buffer: true
+  })
   ],
   resolve: {
     alias: {
