@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Editor } from '@bytemd/vue-next'
+import { ref, type Ref } from 'vue'
+// @ts-ignore
+import { Editor }  from '@bytemd/vue-next'
 import gfm from '@bytemd/plugin-gfm'
 import 'bytemd/dist/index.css'
+import {type IWalletHandler, WalletHandler, FileIo, FileUploadHandler, StorageHandler, getFileTreeData} from '@jackallabs/jackal.js'
+import type {IUploadList} from '@jackallabs/jackal.js'
 
-import {WalletHandler, FileIo, FileIoI, FileUploadHandler, StorageHandler, getFileTreeData, IUploadList} from 'jackal.js'
+type FileData = {
+  name: string;
+  fid: string;
+};
 
-let wallet = ref({})
-const walletActive = ref(false)
-let fileIo: FileIoI = null
+const wallet: Ref<any> = ref({})
+const walletActive : Ref<boolean> = ref(false)
+const fileIo: Ref<any> = ref({})
+const data: Ref<FileData[]> = ref([])
+
+const path = "jeditor"
 
 const mSignerChain = 'jackal-1'
 const mainnet = {
@@ -61,7 +70,7 @@ const mainnet = {
   }
 }
 
-const connectWallet = async function() {
+async function connectWallet() {
 
   const walletConfig = {
     selectedWallet: 'keplr',
@@ -75,28 +84,33 @@ const connectWallet = async function() {
   // Hooking up the wallet to your app
   wallet.value = await WalletHandler.trackWallet(walletConfig)
 
-  fileIo = await FileIo.trackIo(wallet.value, '1.0.9')
+  fileIo.value = await FileIo.trackIo(wallet.value, '1.1.2')
 
-  const listOfFolders = ["editor-demo"] 
+  const listOfFolders = [path] 
   // you can create as many folders as you would like this way
 
   // after the first time, this code can be used instead. this will only create new folders if they don't already exist
-  await fileIo.verifyFoldersExist(listOfFolders)
+  await fileIo.value.verifyFoldersExist(listOfFolders)
   walletActive.value = true
+  updateFileList()
 }
 
 const uploadFile = async function () {
+  const fileName = globFileName.value
+  if (fileName.length == 0) {
+    alert("file needs name")
+    return
+  }
 
-  const fileName = "test.md"
-
+  loading.value = true
 
   const blob = new Blob([content.value], { type: 'text/plain' });
   const toUpload = new File([blob], fileName, {type: "text/plain"});
 
-  const parentFolderPath = "s/editor-demo" // replace this with your own path
+  const parentFolderPath = "s/" + path // replace this with your own path
   const handler = await FileUploadHandler.trackFile(toUpload, parentFolderPath)
 
-  const parent = await fileIo.downloadFolder(parentFolderPath)
+  const parent = await fileIo.value.downloadFolder(parentFolderPath)
   console.log(parent)
   const uploadList: IUploadList = {}
   uploadList[fileName] =  {
@@ -107,48 +121,105 @@ const uploadFile = async function () {
     uploadable: await handler.getForPublicUpload()
   }
   
-  const details = await fileIo.staggeredUploadFiles(uploadList, parent, {counter: 0, complete: 0})
+  const details = await fileIo.value.staggeredUploadFiles(uploadList, parent, {counter: 0, complete: 0})
   console.log(details)
 
-  const f = await getFileTreeData("s/editor-demo/" + fileName, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
-
-  const fidList = JSON.parse(f.value.files.contents)
+  const f = await getFileTreeData("s/" + path + "/" + fileName, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
+  const fFiles = f.value.files
+    if (fFiles == null) {
+      loading.value = false
+      return
+    }
+  const fidList = JSON.parse(fFiles.contents)
   const newFid = fidList.fids[0]
   console.log(newFid)
 
+  updateFileList()
+  loading.value = false
   alert("Success!")
 }
 
-const loadFile = async function () {
-
-  const fileName = "test.md"
-
-  const f = await getFileTreeData("s/editor-demo/" + fileName, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
-
-  const fidList = JSON.parse(f.value.files.contents)
+const loadFile = async function (fileName : string) {
+  const f = await getFileTreeData("s/" + path + "/" + fileName, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
+  const fFiles = f.value.files
+    if (fFiles == null) {
+      return
+    }
+  const fidList = JSON.parse(fFiles.contents)
   const newFid = fidList.fids[0]
 
   const response = await fetch("https://jackal.link/f/" + newFid)
   content.value = await response.text()
   console.log(content.value)
+
+  globFileName.value = fileName
+}
+
+const openFile = async function (fileName : string) {
+  const link = "https://jackal.link/p/" + wallet.value.getJackalAddress() + "/" +  path + "/" + fileName
+  const w = window.open(link, '_blank')
+  if (w == null) {
+    return
+  }
+  w.focus();
 }
 
 
-let content = ref('')
+const content = ref('')
+const loading = ref(false)
+const globFileName = ref('')
 
 const plugins = [gfm()]
 
 const handleChange = (v: string) => {
   content.value = v
 }
+
+const isDisabled = function() : boolean {
+  return !walletActive.value || loading.value
+}
+
+async function updateFileList(){
+  const listFiles = await fileIo.value.downloadFolder("s/" + path)
+  const files = listFiles.folderDetails.fileChildren
+
+  let d = []
+
+  let x = 0
+  for (const key of Object.keys(files)) {
+    const f = files[key]
+
+    const fDetails = await getFileTreeData("s/" + path + "/" + f.name, wallet.value.getJackalAddress(), wallet.value.getQueryHandler())
+    console.log(fDetails)
+    const dFiles = fDetails.value.files
+    if (dFiles == null) {
+      continue
+    }
+    const fidList = JSON.parse(dFiles.contents)
+    const newFid = fidList.fids[0]
+
+    d[x] = {name: key, fid: newFid}
+    x ++
+  }
+  console.log(d)
+  data.value = d
+}
 </script>
 
-<template>
+<template >
   <main>
-    <button type="button" @click="connectWallet">{{ (walletActive.value == true) ? "Connected" : "Connect Wallet"}}</button>
-    <button type="button" @click="uploadFile">Save</button>
-    <button type="button" @click="loadFile">Load</button>
+    <h1>Jackal Markdown Editor</h1>
+    <button type="button" @click="connectWallet">{{ (walletActive == true) ? "Connected" : "Connect Wallet"}}</button>
+    <span>File Name: </span>
+    <input  class="filename" type="text" v-model="globFileName">
+    <button type="button" @click="uploadFile" :disabled="isDisabled()">{{loading ? "Uploading..." : "Save"}}</button>
     <Editor :value="content" :plugins="plugins" @change="handleChange" />
+    <div class="files">
+      <div class="card" v-for="item in data" :key="item.name">
+        <h1 class="file-title" @click="function () {loadFile(item.name)}">{{item.name}}</h1>
+        <span class="gateway-link" @click="function () {openFile(item.name)}">Gateway</span>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -157,14 +228,77 @@ const handleChange = (v: string) => {
   max-width: 1280px;
   margin: 0 auto;
   font-weight: normal;
+  /* padding-top: 10px; */
+}
+
+h1 {
+  margin-top: 0px;
 }
 
 .bytemd {
-  width: 80vw;
+  width: 60vw;
   height: calc(100vh - 200px);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+.gateway-link,.file-title {
+  cursor: pointer;
+}
+
+.gateway-link:hover {
+  text-decoration: underline;
+}
+
+.file-title:hover {
+  text-decoration: underline;
+}
+
+button {
+  margin-left: 20px;
+  margin-right: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+}
+
+button:disabled {
+  cursor: auto;
+  border-color: black;
+}
+
+.filename {
+  box-sizing: border-box;
+  padding: 5px;
+  font-size: 16px;
+  border-width: 1px;
+  border-radius: 8px;
+  height: 40px;
+  padding-left: 10px;
 }
 
 .bytemd-body {
   text-align: left;
 }
+
+.files {
+    display: grid;
+    grid-auto-flow: row; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    gap: 10px 10px; 
+}
+
+.card > h1 {
+  font-size: 1.6em;
+}
+
+.card {
+  border-radius: 5px;
+  border-style: solid;
+  padding: 10px;
+  overflow: hidden;
+}
+
 </style>
